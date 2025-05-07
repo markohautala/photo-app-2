@@ -1,10 +1,13 @@
-<script setup>
-
-</script>
 
 <template>
-  <h1>Hi!</h1>
+  <v-app>
+    <Navbar></Navbar>
+    <v-main>
+      <router-view />  <!-- This will display the routed component -->
+    </v-main>
+  </v-app>
 </template>
 
-<style scoped>
-</style>
+<script setup>
+import Navbar from './components/Navbar.vue';
+</script>
