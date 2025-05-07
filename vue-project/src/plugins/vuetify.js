@@ -17,9 +17,20 @@ const customTheme = {
     'brown': '#603F26',
     'brown-darker': '#503C3C',
     'brown-darkest': '#3B3030',
-    primary: '#EAD8C0', // Ljusbeige för navbar
-    secondary: '#3B3030', // Mörkbrun för knapparna
-    'primary-text': '#FFFFFF', // Vit text på knappar
+    primary: '#EAD8C0',
+    secondary: '#3B3030',
+    'primary-text': '#FFFFFF',
+  },
+}
+
+const customDarkTheme = {
+  dark: true,
+  colors: {
+    background: '#1e1e1e',
+    surface: '#121212',
+    primary: '#3B3030',
+    secondary: '#EAD8C0',
+    'primary-text': '#FFFFFF',
   },
 }
 
@@ -33,6 +44,7 @@ const vuetify = createVuetify({
     defaultTheme: 'customTheme',
     themes: {
       customTheme,
+      customDarkTheme,
     },
   },
 })

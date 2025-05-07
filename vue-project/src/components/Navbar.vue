@@ -1,27 +1,37 @@
-<!-- src/components/Navbar.vue -->
 <template>
-  <v-app-bar app flat color="primary" dark>
-    <v-toolbar-title>
-      Logo
-      <!-- För att byta till bild, använd: -->
-      <!-- <v-img src="/path/to/logo.png" alt="Logo" max-height="40" contain /> -->
-    </v-toolbar-title>
-
+  <v-app-bar app flat :color="$vuetify.theme.current.colors.primary" dark>
+    <v-toolbar-title>Logo</v-toolbar-title>
     <v-spacer></v-spacer>
 
-    <!-- Höger: Knappar -->
-    <v-btn text @click="goTo('gallery')">Gallery</v-btn>
-    <v-btn text @click="goTo('upload')">Upload</v-btn>
+    <template v-if="auth.authenticated">
+      <v-btn text @click="goTo('gallery')">Gallery</v-btn>
+      <v-btn text @click="goTo('upload')">Upload</v-btn>
+    </template>
+
+    <v-btn icon @click="toggleTheme">
+      <v-icon>{{ isDark ? 'mdi-moon-waning-crescent' : 'mdi-white-balance-sunny' }}</v-icon>
+    </v-btn>
   </v-app-bar>
 </template>
 
 <script setup>
-import { useRouter } from 'vue-router';  // Import useRouter to use Vue Router
+import { useRouter } from 'vue-router'
+import { useAuthStore } from '@/stores/auth'
+import { useTheme } from 'vuetify'
+import { computed } from 'vue'
 
-const router = useRouter();
+const router = useRouter()
+const auth = useAuthStore()
 
 const goTo = (page) => {
-  // Use router.push() to navigate to the page
-  router.push({ name: page });
-};
+  router.push({ name: page })
+}
+
+const theme = useTheme()
+const isDark = computed(() => theme.global.current.value.dark)
+
+const toggleTheme = () => {
+  const current = theme.global.name.value
+  theme.global.name.value = current === 'customTheme' ? 'customDarkTheme' : 'customTheme'
+}
 </script>

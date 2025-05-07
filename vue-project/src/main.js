@@ -4,8 +4,10 @@ import vuetify from './plugins/vuetify';
 import '@mdi/font/css/materialdesignicons.css'
 import 'vuetify/styles'
 import router from './router';  // Import the router
+import { createPinia } from 'pinia';
 
 const app = createApp(App)
+app.use(createPinia());
 app.use(vuetify)
 app.use(router);  // Use the router
 app.mount('#app')
