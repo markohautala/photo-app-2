@@ -7,8 +7,8 @@ import UploadPage from './components/UploadPage.vue';
 
 const routes = [
   { path: '/', component: AuthenticationPage, name: 'auth' },
-  { path: '/gallery', component: GalleryPage, name: 'gallery', meta: { requiresAuth: true } },
-  { path: '/upload', component: UploadPage, name: 'upload', meta: { requiresAuth: true } },
+  { path: '/gallery', component: GalleryPage, name: 'gallery', meta: { requiresAuth: true } }, // Gallery page requires authentication
+  { path: '/upload', component: UploadPage, name: 'upload', meta: { requiresAuth: true } }, // Upload page requires authentication
   { path: '/:pathMatch(.*)*', redirect: { name: 'gallery' } }, // Redirect to gallery for any unmatched routes
 ];
 
