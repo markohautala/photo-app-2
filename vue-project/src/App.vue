@@ -3,7 +3,9 @@
   <v-app>
     <Navbar></Navbar>
     <v-main>
-      <router-view />  <!-- This will display the routed component -->
+      <n-loading-bar-provider>
+        <router-view />  <!-- This will display the routed component -->
+      </n-loading-bar-provider>
     </v-main>
   </v-app>
 </template>

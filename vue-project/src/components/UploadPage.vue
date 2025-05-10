@@ -51,6 +51,7 @@
 <script setup>
 import { ref, reactive } from "vue";
 import { useRouter } from "vue-router";
+import { useLoadingBar } from "naive-ui";
 
 const fileInput = ref(null);
 const router = useRouter();
@@ -60,6 +61,8 @@ const dragging = ref(false);
 const error = ref("");
 const uploadsComplete = ref(false);
 const uploadProgress = reactive([]);
+
+const loadingBar = useLoadingBar();
 
 /**
  * Trigger hidden file input
@@ -99,6 +102,8 @@ const handleUpload = async (e) => {
   uploadsComplete.value = false;
   uploadProgress.splice(0);
 
+  loadingBar.start(); // Loading bar starts
+
   const fileList = Array.from(files);
   fileList.forEach(() => uploadProgress.push({ progress: 0, status: "Laddar upp..." }));
 
@@ -107,6 +112,7 @@ const handleUpload = async (e) => {
     formData.append("file", file);
     formData.append("upload_preset", import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET);
     formData.append("folder", "vue-gallery");
+
 
     let progress = 0;
     const interval = setInterval(() => {
@@ -132,12 +138,14 @@ const handleUpload = async (e) => {
       uploadProgress[index].progress = 0;
       uploadProgress[index].status = "Misslyckades";
       console.error("Upload error:", err);
+      loadingBar.error(); // Loading bar error state
     }
   };
 
   await Promise.all(fileList.map((file, i) => uploadSingleFile(file, i)));
 
   uploadsComplete.value = true;
+  loadingBar.finish(); // Loading bar finishes
   setTimeout(() => {
     router.push("/gallery");
   }, 3000);
