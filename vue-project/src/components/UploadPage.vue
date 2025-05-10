@@ -30,7 +30,7 @@
           v-for="(file, index) in uploadProgress"
           :key="index"
           :model-value="file.progress"
-          color="success"
+          color="#7ffcd1"
           height="16"
           class="mb-4"
           rounded
