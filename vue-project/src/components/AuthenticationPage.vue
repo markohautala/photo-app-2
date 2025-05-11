@@ -29,7 +29,7 @@ const router = useRouter();
 const auth = useAuthStore();
 
 // Force string for comparison (env vars are always strings!)
-const AUTH_CODE = import.meta.env.VITE_AUTH_CODE.toString();
+const AUTH_CODE = import.meta.env.VITE_AUTH_CODE.toString()
 
 const onInput = (index, value) => {
   if (value.length === 1 && index < 3) {
