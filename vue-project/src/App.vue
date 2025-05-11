@@ -17,5 +17,18 @@
 </template>
 
 <script setup>
-import Navbar from './components/Navbar.vue';
+import Navbar from './components/Navbar.vue'
+import { useTheme } from 'vuetify'
+import { watch } from 'vue'
+
+// 🟢 Lyssna på Vuetify-temat och uppdatera <html>-klassen
+const theme = useTheme()
+
+watch(
+  () => theme.global.current.value.dark,
+  (isDark) => {
+    document.documentElement.classList.toggle('dark', isDark)
+  },
+  { immediate: true }
+)
 </script>
