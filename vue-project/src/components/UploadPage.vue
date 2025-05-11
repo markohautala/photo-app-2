@@ -30,7 +30,7 @@
           v-for="(file, index) in uploadProgress"
           :key="index"
           :model-value="file.progress"
-          color="#7ffcd1"
+          color="#90EE90"
           height="16"
           class="mb-4"
           rounded
@@ -131,7 +131,7 @@ const handleUpload = async (e) => {
 
       clearInterval(interval);
       uploadProgress[index].progress = 100;
-      uploadProgress[index].status = "Uppladdad";
+      uploadProgress[index].status = " Uppladdad";
       console.log("Upload success:", data.secure_url);
     } catch (err) {
       clearInterval(interval);

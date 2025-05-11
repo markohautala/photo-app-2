@@ -1,33 +1,16 @@
+<!-- src/views/GalleryPage.vue -->
 <template>
-  <div class="gallery-page">
+  <div>
     <h1>Gallery Page</h1>
-
-    <n-space justify="center" align="center" wrap>
-      <n-skeleton
-        v-for="n in 3"
-        :key="n"
-        round
-        width="380px"
-        height="300px"
-        :repeat="2"
-        animated
-        :style="{
-          borderRadius: '3%',
-          margin: '5px',
-          marginTop: '25px',
-        }"
-      />
-    </n-space>
+    <!-- Gallery Skeleton loader placeholder -->
+    <GallerySkeleton />
   </div>
 </template>
 
 <script setup>
-// No script logic needed for now
+// Import the GallerySkeleton component
+import GallerySkeleton from '@/components/GallerySkeleton.vue';
 </script>
 
 <style scoped>
-.gallery-page {
-  padding: 2rem;
-  text-align: center;
-}
 </style>

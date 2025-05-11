@@ -1,9 +1,9 @@
 <template>
   <n-loading-bar-provider
     :theme-overrides="{
-      colorLoading: '#7ffcd1',
-      colorError: '#ff6b6b',
-      colorSuccess: '#7ffcd1'
+      colorLoading: '#90EE90',
+      colorError: '#FF6347',
+      colorSuccess: '#90EE90'
     }"
     :container-style="{ position: 'absolute', top: '64px', left: '0', right: '0', zIndex: 9999 }"
   >
