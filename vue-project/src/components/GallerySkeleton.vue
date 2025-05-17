@@ -1,6 +1,7 @@
+<!-- src/components/GallerySkeleton.vue -->
 <template>
-  <div class="container">
-    <div class="skeleton-card" v-for="n in 3" :key="n"></div>
+  <div class="gallery">
+    <div class="skeleton-card" v-for="n in 8" :key="n"></div>
   </div>
 </template>
 
@@ -8,18 +9,17 @@
 </script>
 
 <style scoped>
-.container {
-  display: flex;
-  gap: 20px;
-  justify-content: center;
-  padding: 20px;
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 16px;
+  padding: 16px;
 }
 
 .skeleton-card {
   width: 100%;
-  max-width: 400px;
-  height: 300px;
-  border-radius: 12px;
+  height: 250px;
+  border-radius: 8px;
   background: linear-gradient(
     90deg,
     #e0e0e0 25%,
@@ -28,9 +28,7 @@
   );
   background-size: 200% 100%;
   animation: shimmer 2.5s infinite linear;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
-
 @keyframes shimmer {
   0% {
     background-position: 200% 0;
@@ -41,7 +39,6 @@
 }
 </style>
 
-<!-- Global styles (not scoped) for dark theme -->
 <style>
 html.dark .skeleton-card {
   background: linear-gradient(
@@ -51,8 +48,7 @@ html.dark .skeleton-card {
     #3a3a3a 75%
   );
   background-size: 200% 100%;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-  animation: shimmer-dark 2.5s infinite linear; /* Lägg till animation för mörkt tema */
+  animation: shimmer-dark 2.5s infinite linear;
 }
 
 @keyframes shimmer-dark {

@@ -9,6 +9,3 @@
 <script setup>
 import ImageFetch from '@/components/ImageFetch.vue';
 </script>
-
-<style scoped>
-</style>

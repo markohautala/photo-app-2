@@ -1,26 +1,27 @@
+<!-- src/components/ImageFetch.vue -->
 <script setup>
 import { ref, onMounted } from 'vue';
 import { Cloudinary } from '@cloudinary/url-gen';
 import { AdvancedImage } from '@cloudinary/vue';
 import { fill } from '@cloudinary/url-gen/actions/resize';
+import GallerySkeleton from './GallerySkeleton.vue';
 
 const cld = new Cloudinary({
   cloud: {
-    cloudName: 'dtjbfg6km', // Hårdkodad här också
+    cloudName: 'dtjbfg6km',
   },
 });
 
 const images = ref([]);
-const loading = ref(true);
 const error = ref(null);
+const showSkeleton = ref(true);
 
 const fetchImages = async () => {
-  try {
-    loading.value = true;
-    const response = await fetch('http://localhost:3001/api/images');
+  const delay = new Promise(resolve => setTimeout(resolve, 1500)); // Minsta skeleton-visning
 
+  try {
+    const response = await fetch('http://localhost:3001/api/images');
     const data = await response.json();
-    console.log('API Response:', data);
 
     if (!response.ok || !data.resources) {
       throw new Error(data.error?.message || 'Kunde inte hämta bilder');
@@ -34,7 +35,8 @@ const fetchImages = async () => {
     error.value = err.message;
     console.error('Fel vid hämtning av bilder:', err);
   } finally {
-    loading.value = false;
+    await delay; // Vänta klart 1500 ms oavsett
+    showSkeleton.value = false;
   }
 };
 
@@ -44,17 +46,17 @@ onMounted(() => {
 </script>
 
 <template>
-  <div>
-    <div v-if="loading">Laddar bilder...</div>
-    <div v-else-if="error" class="error">{{ error }}</div>
-    <div v-else class="gallery">
-      <AdvancedImage
-        v-for="img in images"
-        :key="img.id"
-        :cldImg="img.url"
-        class="gallery-item"
-      />
-    </div>
+  <div v-if="error" class="error">{{ error }}</div>
+
+  <GallerySkeleton v-else-if="showSkeleton" />
+
+  <div v-else class="gallery">
+    <AdvancedImage
+      v-for="img in images"
+      :key="img.id"
+      :cldImg="img.url"
+      class="gallery-item"
+    />
   </div>
 </template>
 
