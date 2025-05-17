@@ -1,7 +1,11 @@
-<!-- src/components/GallerySkeleton.vue -->
 <template>
   <div class="gallery">
-    <div class="skeleton-card" v-for="n in 8" :key="n"></div>
+    <div
+      class="skeleton-card"
+      v-for="n in 8"
+      :key="n"
+      :style="{ animationDelay: `${n * 75}ms` }"
+    ></div>
   </div>
 </template>
 
@@ -20,18 +24,30 @@
   width: 100%;
   height: 250px;
   border-radius: 8px;
+
+  /* Light mode shimmer gradient exakt enligt dina RGBA-värden */
   background: linear-gradient(
     90deg,
-    #e0e0e0 25%,
-    #f5f5f5 50%,
-    #e0e0e0 75%
+    rgba(248, 248, 248, 0) 0%,
+    rgba(248, 248, 248, 0.6) 25%,
+    rgba(248, 248, 248, 0.85) 37%,
+    rgba(248, 248, 248, 0.95) 48%,
+    rgba(248, 248, 248, 0.95) 51%,
+    rgba(248, 248, 248, 0.85) 61%,
+    rgba(248, 248, 248, 0.6) 74%,
+    rgba(248, 248, 248, 0) 100%
   );
   background-size: 200% 100%;
-  animation: shimmer 2.5s infinite linear;
+  animation: shimmer 833ms infinite steps(1, end);
+  animation-timing-function: ease-in-out;
 }
+
 @keyframes shimmer {
   0% {
     background-position: 200% 0;
+  }
+  50% {
+    background-position: -200% 0;
   }
   100% {
     background-position: -200% 0;
@@ -41,19 +57,29 @@
 
 <style>
 html.dark .skeleton-card {
+  /* Dark mode shimmer gradient exakt enligt dina RGBA-värden */
   background: linear-gradient(
     90deg,
-    #3a3a3a 25%,
-    #4a4a4a 50%,
-    #3a3a3a 75%
+    rgba(40, 40, 40, 0) 0%,
+    rgba(40, 40, 40, 0.5) 25%,
+    rgba(40, 40, 40, 0.7) 37%,
+    rgba(40, 40, 40, 0.8) 48%,
+    rgba(40, 40, 40, 0.8) 51%,
+    rgba(40, 40, 40, 0.7) 61%,
+    rgba(40, 40, 40, 0.5) 74%,
+    rgba(40, 40, 40, 0) 100%
   );
   background-size: 200% 100%;
-  animation: shimmer-dark 2.5s infinite linear;
+  animation: shimmer-dark 833ms infinite steps(1, end);
+  animation-timing-function: ease-in-out;
 }
 
 @keyframes shimmer-dark {
   0% {
     background-position: 200% 0;
+  }
+  50% {
+    background-position: -200% 0;
   }
   100% {
     background-position: -200% 0;
