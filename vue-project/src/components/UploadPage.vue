@@ -10,7 +10,7 @@
       @click="triggerFileInput"
     >
       <div class="text-center">
-        <v-icon size="64" color="primary">mdi-cloud-upload</v-icon>
+        <v-icon size="100" color="primary">mdi-cloud-upload</v-icon>
         <p v-if="error" class="text-error">{{ error }}</p>
         <p v-else-if="dragging">Släpp filerna här (max 5 bilder)</p>
         <p v-else>Drag & drop eller klicka för att ladda upp (max 5 bilder)</p>
@@ -30,7 +30,7 @@
           v-for="(file, index) in uploadProgress"
           :key="index"
           :model-value="file.progress"
-          color="#90EE90"
+          color="#75e4c8"
           height="16"
           class="mb-4"
           rounded
@@ -157,6 +157,6 @@ const handleUpload = async (e) => {
   border: 3px dashed gray;
 }
 .border-primary {
-  border: 3px solid #1976d2;
+  border: 3px solid #75e4c8;
 }
 </style>

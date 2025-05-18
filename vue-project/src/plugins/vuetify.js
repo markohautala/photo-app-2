@@ -17,7 +17,7 @@ const customTheme = {
     'brown': '#603F26',
     'brown-darker': '#503C3C',
     'brown-darkest': '#3B3030',
-    primary: '#EAD8C0',
+    primary: '#f7f0e5',
     secondary: '#3B3030',
     'primary-text': '#FFFFFF',
   },

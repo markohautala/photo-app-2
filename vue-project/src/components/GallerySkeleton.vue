@@ -2,7 +2,7 @@
   <div class="gallery">
     <div
       class="skeleton-card"
-      v-for="n in 8"
+      v-for="n in 9"
       :key="n"
       :style="{ animationDelay: `${n * 75}ms` }"
     ></div>
@@ -15,7 +15,7 @@
 <style scoped>
 .gallery {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(333.33px, 1fr));
   gap: 16px;
   padding: 16px;
 }
