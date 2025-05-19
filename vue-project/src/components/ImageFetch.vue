@@ -1,23 +1,24 @@
-<!-- src/components/ImageFetch.vue -->
 <script setup>
 import { ref, onMounted } from 'vue';
 import { Cloudinary } from '@cloudinary/url-gen';
 import { AdvancedImage } from '@cloudinary/vue';
 import GallerySkeleton from './GallerySkeleton.vue';
 
+// Initialize Cloudinary instance
 const cld = new Cloudinary({
   cloud: {
     cloudName: import.meta.env.VITE_CLOUDINARY_CLOUD_NAME,
   },
 });
 
+// State
 const images = ref([]);
-const columns = ref([[], [], []]);  // 3 columns
 const error = ref(null);
 const showSkeleton = ref(true);
 
+// Fetch image data
 const fetchImages = async () => {
-  const delay = new Promise(resolve => setTimeout(resolve, 1500));
+  const delay = new Promise(resolve => setTimeout(resolve, 1500)); // simulate loading delay
 
   try {
     const response = await fetch('http://localhost:3001/api/images');
@@ -27,17 +28,10 @@ const fetchImages = async () => {
       throw new Error(data.error?.message || 'Kunde inte hämta bilder');
     }
 
-    const allImages = data.resources.map(resource => ({
+    images.value = data.resources.map(resource => ({
       id: resource.public_id,
-      url: cld.image(resource.public_id) // no resizing applied
+      url: cld.image(resource.public_id),
     }));
-
-    // Distribute images into 3 columns
-    allImages.forEach((img, index) => {
-    columns.value[index % 3].push(img); // distribute across 3
-    });
-
-    images.value = allImages;
   } catch (err) {
     error.value = err.message;
     console.error('Fel vid hämtning av bilder:', err);
@@ -57,51 +51,43 @@ onMounted(() => {
 
   <GallerySkeleton v-else-if="showSkeleton" />
 
-  <div v-else class="row">
-    <div class="column" v-for="(col, colIndex) in columns" :key="colIndex">
-      <AdvancedImage
-        v-for="img in col"
-        :key="img.id"
-        :cldImg="img.url"
-        class="responsive-img"
-      />
-    </div>
+  <div v-else class="masonry">
+    <AdvancedImage
+      v-for="img in images"
+      :key="img.id"
+      :cldImg="img.url"
+      class="masonry-img"
+    />
   </div>
 </template>
 
 <style scoped>
-.row {
-  display: flex;
-  flex-wrap: wrap;
-  padding: 0 4px;
+/* Masonry layout using CSS columns */
+.masonry {
+  column-count: 3;
+  column-gap: 1rem;
+  padding: 1rem;
 }
 
-.column {
-  flex: 33.33%;
-  max-width: 33.33%;
-  padding: 0 4px;
-}
-
-.responsive-img {
-  margin-top: 8px;
-  vertical-align: middle;
+/* Style for individual images */
+.masonry-img {
   width: 100%;
+  display: block;
+  margin-bottom: 1rem;
   border-radius: 8px;
+  break-inside: avoid; /* prevent image breaks between columns */
 }
 
-/* 2 columns */
-@media screen and (max-width: 800px) {
-  .column {
-    flex: 50%;
-    max-width: 50%;
+/* Responsive breakpoints */
+@media screen and (max-width: 1000px) {
+  .masonry {
+    column-count: 2;
   }
 }
 
-/* 1 column */
 @media screen and (max-width: 600px) {
-  .column {
-    flex: 100%;
-    max-width: 100%;
+  .masonry {
+    column-count: 1;
   }
 }
 
