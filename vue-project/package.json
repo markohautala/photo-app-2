@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@cloudinary/url-gen": "^1.21.0",
-    "@cloudinary/vue": "^1.13.1",
+    "@cloudinary/vue": "^1.13.3",
     "@mdi/font": "^7.4.47",
     "cors": "^2.8.5",
     "dotenv": "^16.5.0",
