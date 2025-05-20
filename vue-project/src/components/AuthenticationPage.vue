@@ -1,6 +1,16 @@
-<!-- src/components/AuthenticationPage.vue -->
 <template>
-  <v-container class="d-flex justify-center align-center fill-height">
+  <v-container class="d-flex flex-column align-center justify-center fill-height">
+    <!-- Cloudinary Header Image -->
+    <img
+      src="https://res.cloudinary.com/dtjbfg6km/project-setup-essentials/pkxa2ltbhzwuosz1jwu2"
+      alt="Authentication header"
+      width="300"
+      height="300"
+      class="mb-6"
+      style="object-fit: cover; border-radius: 20px;"
+    />
+
+    <!-- Code Input Fields -->
     <div class="d-flex gap-2">
       <v-text-field
         v-for="(digit, index) in digits"
@@ -18,9 +28,8 @@
   </v-container>
 </template>
 
-
 <script setup>
-import { ref, watch } from 'vue';
+import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
 
@@ -28,8 +37,7 @@ const digits = ref(['', '', '', '']);
 const router = useRouter();
 const auth = useAuthStore();
 
-// Force string for comparison (env vars are always strings!)
-const AUTH_CODE = import.meta.env.VITE_AUTH_CODE.toString()
+const AUTH_CODE = import.meta.env.VITE_AUTH_CODE.toString();
 
 const onInput = (index, value) => {
   if (value.length === 1 && index < 3) {
@@ -37,22 +45,14 @@ const onInput = (index, value) => {
     next?.focus();
   }
 
-  // Check if all 4 digits are filled in
   if (digits.value.every((d) => d.length === 1)) {
     const code = digits.value.join('');
     console.log("Entered:", code, "| Expected:", AUTH_CODE);
 
     if (code === AUTH_CODE) {
-      auth.login(); // ✅ set authenticated = true
-      router.push({ name: 'gallery' }); // ✅ navigate
+      auth.login();
+      router.push({ name: 'gallery' });
     }
   }
 };
 </script>
-
-<style scoped>
-.v-text-field {
-  width: 50px;
-  text-align: center;
-}
-</style>
