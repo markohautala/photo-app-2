@@ -7,9 +7,7 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "proxy": "node cloudinary-proxy.js",
-    "dev:all": "concurrently \"npm run dev\" \"npm run proxy\"",
-    "start": "npm run dev:all"
+    "start": "vite"
   },
   "dependencies": {
     "@cloudinary/url-gen": "^1.21.0",

@@ -16,12 +16,18 @@ const images = ref([]);
 const error = ref(null);
 const showSkeleton = ref(true);
 
-// Fetch image data
+// Dynamisk proxy-url beroende på miljö
+const proxyUrl = import.meta.env.PROD
+  ? '/api/cloudinary-proxy'       // produktion (Vercel API route)
+  : '/api/cloudinary-proxy';      // utveckling (proxy via vite.config.js)
+
 const fetchImages = async () => {
   const delay = new Promise(resolve => setTimeout(resolve, 1500)); // simulate loading delay
 
   try {
-    const response = await fetch('http://localhost:3001/api/images');
+    const response = await fetch(proxyUrl, {
+      method: 'POST',
+    });
     const data = await response.json();
 
     if (!response.ok || !data.resources) {
