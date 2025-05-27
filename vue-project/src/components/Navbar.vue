@@ -1,6 +1,6 @@
 <template>
   <v-app-bar app flat :color="$vuetify.theme.current.colors.primary" dark>
-    <v-toolbar-title>M&M Wedding App</v-toolbar-title>
+    <v-toolbar-title class="custom-font">M&M Wedding</v-toolbar-title>
     <v-spacer></v-spacer>
 
     <template v-if="auth.authenticated">

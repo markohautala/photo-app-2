@@ -1,7 +1,7 @@
 <!-- src/views/GalleryPage.vue -->
 <template>
   <v-container>
-    <h1 class="text-h4 mb-4">Gallery Page</h1>
+    <h1 class="text-h4 mb-4 custom-font">Gallery Page</h1>
     <ImageFetch />
   </v-container>
 </template>
