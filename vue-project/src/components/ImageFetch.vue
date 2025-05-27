@@ -17,9 +17,9 @@ const error = ref(null);
 const showSkeleton = ref(true);
 
 // Dynamisk proxy-url beroende på miljö
-const proxyUrl = import.meta.env.PROD
-  ? '/api/cloudinary-proxy'       // produktion (Vercel API route)
-  : '/api/cloudinary-proxy';      // utveckling (proxy via vite.config.js)
+const proxyUrl = import.meta.env.DEV
+  ? '/api/cloudinary-proxy' // Lokalt via Vite
+  : 'https://photo-app-2.vercel.app/api/cloudinary-proxy'; // Vercel deploy
 
 const fetchImages = async () => {
   const delay = new Promise(resolve => setTimeout(resolve, 1500)); // simulate loading delay

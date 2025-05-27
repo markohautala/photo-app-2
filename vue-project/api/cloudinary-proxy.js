@@ -1,11 +1,9 @@
+import { Buffer } from 'buffer'; // 👈 Gör detta i ESM-miljö
 import fetch from 'node-fetch';
 
 export default async function handler(req, res) {
   // Tillåt CORS från localhost och produktion
-  const allowedOrigins = [
-    'http://localhost:5173',           // Vite frontend lokal URL
-    'https://photo-app-2.vercel.app', // vercel domän
-  ];
+  const allowedOrigins = ['https://photo-app-2.vercel.app', 'http://localhost:5173'];
 
   const origin = req.headers.origin;
   if (allowedOrigins.includes(origin)) {
@@ -59,3 +57,6 @@ export default async function handler(req, res) {
     res.status(500).json({ error: error.message });
   }
 }
+
+// Gör så det funkar för både Vite (middleware) och Vercel (serverless)
+export const cloudinaryProxy = handler;
