@@ -107,40 +107,42 @@ const handleUpload = async (e) => {
   const fileList = Array.from(files);
   fileList.forEach(() => uploadProgress.push({ progress: 0, status: "Laddar upp..." }));
 
-  const uploadSingleFile = async (file, index) => {
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("upload_preset", import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET);
-    formData.append("folder", "vue-gallery");
+  const uploadSingleFile = (file, index) => {
+    return new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      const formData = new FormData();
 
+      formData.append("file", file);
+      formData.append("upload_preset", import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET);
+      formData.append("folder", "vue-gallery");
 
-    let progress = 0;
-    const interval = setInterval(() => {
-      if (progress < 95) {
-        progress += Math.random() * 10;
-        uploadProgress[index].progress = Math.min(95, progress);
-      }
-    }, 300);
-
-    try {
-      const res = await fetch(`https://api.cloudinary.com/v1_1/${import.meta.env.VITE_CLOUDINARY_CLOUD_NAME}/upload`, {
-        method: "POST",
-        body: formData,
+      xhr.upload.addEventListener("progress", (e) => {
+        if (e.lengthComputable) {
+          const percent = (e.loaded / e.total) * 100;
+          uploadProgress[index].progress = Math.round(percent);
+          uploadProgress[index].status = "Laddar upp...";
+        }
       });
-      const data = await res.json();
 
-      clearInterval(interval);
-      uploadProgress[index].progress = 100;
-      uploadProgress[index].status = " Uppladdad";
-      console.log("Upload success:", data.secure_url);
-    } catch (err) {
-      clearInterval(interval);
-      uploadProgress[index].progress = 0;
-      uploadProgress[index].status = "Misslyckades";
-      console.error("Upload error:", err);
-      loadingBar.error(); // Loading bar error state
-    }
+      xhr.onreadystatechange = () => {
+        if (xhr.readyState === XMLHttpRequest.DONE) {
+          if (xhr.status >= 200 && xhr.status < 300) {
+            uploadProgress[index].progress = 100;
+            uploadProgress[index].status = "Uppladdad";
+            resolve(JSON.parse(xhr.responseText));
+          } else {
+            uploadProgress[index].progress = 0;
+            uploadProgress[index].status = "Misslyckades";
+            reject(xhr.statusText);
+          }
+        }
+      };
+
+      xhr.open("POST", `https://api.cloudinary.com/v1_1/${import.meta.env.VITE_CLOUDINARY_CLOUD_NAME}/upload`);
+      xhr.send(formData);
+    });
   };
+
 
   await Promise.all(fileList.map((file, i) => uploadSingleFile(file, i)));
 
