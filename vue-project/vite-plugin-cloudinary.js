@@ -1,4 +1,4 @@
-// vite-plugin-cloudinary.js
+// bara för local utveckling - inte för produktion
 import fetch from 'node-fetch';
 import dotenv from 'dotenv';
 dotenv.config();

@@ -38,7 +38,7 @@
           <template #default>
             <div class="d-flex justify-space-between px-4 white--text">
               <span><strong>Fil {{ index + 1 }}</strong></span>
-              <span>{{ file.status }} – {{ Math.round(file.progress) }}%</span>
+              <span>{{ file.status }} - {{ Math.round(file.progress) }}%</span>
             </div>
           </template>
         </v-progress-linear>

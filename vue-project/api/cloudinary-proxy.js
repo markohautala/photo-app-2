@@ -1,4 +1,6 @@
-import { Buffer } from 'buffer'; // 👈 Gör detta i ESM-miljö
+// Hela denna fil är tillför produktion - inte locally. Bara för Vercel
+
+import { Buffer } from 'buffer';
 import fetch from 'node-fetch';
 
 export default async function handler(req, res) {
