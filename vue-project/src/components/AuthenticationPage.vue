@@ -16,12 +16,12 @@
         autocomplete="off"
         outlined
         @input="onInput(index, digits[index])"
+        @keydown="onKeyDown(index, $event)"
         style="width: 80px; height: 80px; text-align: center; border-radius: 20px; font-size: 32px;"
       />
     </div>
   </v-container>
 </template>
-
 
 <script setup>
 import { ref, watch } from 'vue';
@@ -36,18 +36,15 @@ const digits = ref(['', '', '', '']);
 const router = useRouter();
 const auth = useAuthStore();
 
-
 // Cloudinary setup
 const cld = new Cloudinary({
   cloud: {
-    cloudName: 'dtjbfg6km' // 🔁 Replace with your Cloudinary cloud name
+    cloudName: 'dtjbfg6km'
   }
 });
 
-const myImage = cld.image('pkxa2ltbhzwuosz1jwu2');
+const myImage = cld.image('hbaabzntozaklontcwmf');
 
-
-// Force string for comparison (env vars are always strings!)
 const AUTH_CODE = import.meta.env.VITE_AUTH_CODE.toString()
 
 const onInput = (index, value) => {
@@ -56,15 +53,32 @@ const onInput = (index, value) => {
     next?.focus();
   }
 
-  // Check if all 4 digits are filled in
   if (digits.value.every((d) => d.length === 1)) {
     const code = digits.value.join('');
     console.log("Entered:", code, "| Expected:", AUTH_CODE);
 
     if (code === AUTH_CODE) {
-      auth.login(); // ✅ set authenticated = true
-      router.push({ name: 'gallery' }); // ✅ navigate
+      auth.login();
+      router.push({ name: 'gallery' });
     }
+  }
+};
+
+const onKeyDown = (index, event) => {
+  if (event.key === 'Backspace') {
+    if (digits.value[index] === '') {
+      if (index > 0) {
+        digits.value[index - 1] = '';
+        // Vänta lite för att säkerställa att DOM hinner uppdateras
+        setTimeout(() => {
+          const prev = document.querySelectorAll('input')[index - 1];
+          prev?.focus();
+        }, 0);
+      }
+    } else {
+      digits.value[index] = '';
+    }
+    event.preventDefault(); // Förhindra standard backspace-beteende
   }
 };
 </script>
