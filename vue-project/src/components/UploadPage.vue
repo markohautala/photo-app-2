@@ -52,6 +52,7 @@
 import { ref, reactive } from "vue";
 import { useRouter } from "vue-router";
 import { useLoadingBar } from "naive-ui";
+import imageCompression from "browser-image-compression";
 
 const fileInput = ref(null);
 const router = useRouter();
@@ -102,17 +103,39 @@ const handleUpload = async (e) => {
   uploadsComplete.value = false;
   uploadProgress.splice(0);
 
-  loadingBar.start(); // Loading bar starts
+  loadingBar.start();
 
   const fileList = Array.from(files);
   fileList.forEach(() => uploadProgress.push({ progress: 0, status: "Laddar upp..." }));
 
-  const uploadSingleFile = (file, index) => {
+  const compressIfNeeded = async (file) => {
+    if (file.size <= 10 * 1024 * 1024) {
+      return file; // under 10MB, use as-is
+    }
+
+    const options = {
+      maxSizeMB: 10,
+      maxWidthOrHeight: 1920,
+      useWebWorker: true,
+    };
+
+    try {
+      const compressed = await imageCompression(file, options);
+      return compressed;
+    } catch (err) {
+      console.error("Compression failed, using original file", err);
+      return file;
+    }
+  };
+
+  const uploadSingleFile = async (file, index) => {
+    const processedFile = await compressIfNeeded(file);
+
     return new Promise((resolve, reject) => {
       const xhr = new XMLHttpRequest();
       const formData = new FormData();
 
-      formData.append("file", file);
+      formData.append("file", processedFile);
       formData.append("upload_preset", import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET);
       formData.append("folder", "vue-gallery");
 
@@ -143,15 +166,21 @@ const handleUpload = async (e) => {
     });
   };
 
-
-  await Promise.all(fileList.map((file, i) => uploadSingleFile(file, i)));
-
-  uploadsComplete.value = true;
-  loadingBar.finish(); // Loading bar finishes
-  setTimeout(() => {
-    router.push("/gallery");
-  }, 3000);
+  try {
+    await Promise.all(fileList.map((file, i) => uploadSingleFile(file, i)));
+    uploadsComplete.value = true;
+    loadingBar.finish();
+    setTimeout(() => {
+      router.push("/gallery");
+    }, 3000);
+  } catch (err) {
+    console.error("Upload failed", err);
+    loadingBar.error();
+    loading.value = false;
+    error.value = "En eller flera uppladdningar misslyckades.";
+  }
 };
+
 </script>
 
 <style scoped>
