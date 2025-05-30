@@ -21,6 +21,7 @@ const proxyUrl = import.meta.env.DEV
   ? '/api/cloudinary-proxy' // Lokalt via Vite
   : 'https://photo-app-2.vercel.app/api/cloudinary-proxy'; // Vercel deploy
 
+// Funktion för att hämta bilder
 const fetchImages = async () => {
   const delay = new Promise(resolve => setTimeout(resolve, 1500)); // simulate loading delay
 
@@ -34,16 +35,41 @@ const fetchImages = async () => {
       throw new Error(data.error?.message || 'Kunde inte hämta bilder');
     }
 
-    images.value = data.resources.map(resource => ({
-      id: resource.public_id,
-      url: cld.image(resource.public_id),
-    }));
+    images.value = data.resources.map(resource => {
+      const lowQuality = cld.image(resource.public_id)
+        .quality('auto:low')
+        .format('auto');
+
+      const fullQualityUrl = cld.image(resource.public_id).toURL();
+
+      return {
+        id: resource.public_id,
+        cldImg: lowQuality,
+        fullUrl: fullQualityUrl,
+      };
+    });
   } catch (err) {
     error.value = err.message;
     console.error('Fel vid hämtning av bilder:', err);
   } finally {
     await delay;
     showSkeleton.value = false;
+  }
+};
+
+// Funktion för nedladdning av originalbild
+const downloadImage = async (url) => {
+  try {
+    const response = await fetch(url);
+    const blob = await response.blob();
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'image.jpg';
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+  } catch (err) {
+    console.error('Fel vid nedladdning:', err);
   }
 };
 
@@ -58,12 +84,16 @@ onMounted(() => {
   <GallerySkeleton v-else-if="showSkeleton" />
 
   <div v-else class="masonry">
-    <AdvancedImage
+    <div
       v-for="img in images"
       :key="img.id"
-      :cldImg="img.url"
-      class="masonry-img"
-    />
+      class="masonry-img-wrapper"
+    >
+      <AdvancedImage :cldImg="img.cldImg" class="masonry-img" />
+      <div class="download-square" @click="downloadImage(img.fullUrl)">
+        <span class="material-symbols-outlined">download</span>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -75,13 +105,37 @@ onMounted(() => {
   padding: 1rem;
 }
 
+.masonry-img-wrapper {
+  position: relative;
+  margin-bottom: 1rem;
+  break-inside: avoid;
+}
+
 /* Style for individual images */
 .masonry-img {
   width: 100%;
   display: block;
-  margin-bottom: 1rem;
   border-radius: 8px;
-  break-inside: avoid; /* prevent image breaks between columns */
+}
+
+/* Download button styling */
+.download-square {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 50px;
+  height: 50px;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(20px);
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.download-square:hover {
+  background: rgba(255, 255, 255, 0.4);
 }
 
 /* Responsive breakpoints */
