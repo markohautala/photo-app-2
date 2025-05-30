@@ -38,7 +38,7 @@ const fetchImages = async () => {
     images.value = data.resources.map(resource => {
       const lowQuality = cld.image(resource.public_id)
         .quality('auto:low')
-        .format('auto');
+        .format('auto')
 
       const fullQualityUrl = cld.image(resource.public_id).toURL();
 
@@ -98,6 +98,7 @@ onMounted(() => {
 </template>
 
 <style scoped>
+
 /* Masonry layout using CSS columns */
 .masonry {
   column-count: 3;
