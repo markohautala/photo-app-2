@@ -125,6 +125,7 @@ onMounted(() => {
   right: 10px;
   width: 50px;
   height: 50px;
+  color: black;
   background: rgba(255, 255, 255, 0.2);
   backdrop-filter: blur(20px);
   border-radius: 5px;
