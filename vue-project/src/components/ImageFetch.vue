@@ -57,21 +57,33 @@ const fetchImages = async () => {
   }
 };
 
-// Funktion för nedladdning av originalbild
+// Funktion för att nedladdning av originalbild
 const downloadImage = async (url) => {
+  const isIOS = /iP(ad|hone|od)/.test(navigator.userAgent);
+
   try {
     const response = await fetch(url);
     const blob = await response.blob();
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.download = 'image.jpg';
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
+    const blobUrl = URL.createObjectURL(blob);
+
+    if (isIOS) {
+      // Open in new tab for iOS users to manually save
+      window.open(blobUrl, '_blank');
+    } else {
+      // Trigger download on desktop and supported platforms
+      const link = document.createElement('a');
+      link.href = blobUrl;
+      link.download = 'image.jpg';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(blobUrl);
+    }
   } catch (err) {
     console.error('Fel vid nedladdning:', err);
   }
 };
+
 
 onMounted(() => {
   fetchImages();
