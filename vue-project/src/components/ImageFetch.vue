@@ -21,10 +21,8 @@ const proxyUrl = import.meta.env.DEV
   ? '/api/cloudinary-proxy' // Lokalt via Vite
   : 'https://photo-app-2.vercel.app/api/cloudinary-proxy'; // Vercel deploy
 
-// Funktion för att hämta bilder
+// Funktion för att hämta bilder från Cloudinary via proxy
 const fetchImages = async () => {
-  const delay = new Promise(resolve => setTimeout(resolve, 1500)); // simulate loading delay
-
   try {
     const response = await fetch(proxyUrl, {
       method: 'POST',
@@ -35,10 +33,10 @@ const fetchImages = async () => {
       throw new Error(data.error?.message || 'Kunde inte hämta bilder');
     }
 
-    images.value = data.resources.map(resource => {
+    const processedImages = data.resources.map(resource => {
       const lowQuality = cld.image(resource.public_id)
         .quality('auto:low')
-        .format('auto')
+        .format('auto');
 
       const fullQualityUrl = cld.image(resource.public_id).toURL();
 
@@ -48,14 +46,28 @@ const fetchImages = async () => {
         fullUrl: fullQualityUrl,
       };
     });
+
+    images.value = processedImages;
+
+    // Vänta tills alla bilder är färdigladdade i DOM
+    const preloadPromises = processedImages.map(img => {
+      return new Promise((resolve, reject) => {
+        const image = new Image();
+        image.src = img.fullUrl;
+        image.onload = resolve;
+        image.onerror = reject;
+      });
+    });
+
+    await Promise.all(preloadPromises);
   } catch (err) {
     error.value = err.message;
     console.error('Fel vid hämtning av bilder:', err);
   } finally {
-    await delay;
     showSkeleton.value = false;
   }
 };
+
 
 const downloadImage = async (url) => {
   try {
