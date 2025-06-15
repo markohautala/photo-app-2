@@ -104,7 +104,7 @@ onMounted(() => {
 
   <div v-else class="masonry">
     <div v-for="img in images" :key="img.id" class="masonry-img-wrapper">
-      <AdvancedImage :cldImg="img.cldImg" class="masonry-img" />
+      <AdvancedImage :cldImg="img.cldImg" class="masonry-img" @load="$event.target.classList.add('loaded')"/>
       <div class="download-square" @click="downloadImage(img.fullUrl)">
         <span class="material-symbols-outlined">download</span>
       </div>
@@ -152,6 +152,15 @@ onMounted(() => {
 
 .download-square:hover {
   background: rgba(255, 255, 255, 0.4);
+}
+
+.masonry-img {
+  transition: filter 0.3s ease;
+  filter: blur(5px);
+}
+
+.masonry-img.loaded {
+  filter: blur(0);
 }
 
 /* Responsive breakpoints */
