@@ -15,7 +15,6 @@ const cld = new Cloudinary({
 const images = ref([]);
 const error = ref(null);
 const showSkeleton = ref(true);
-
 // Dynamisk proxy-url beroende på miljö
 const proxyUrl = import.meta.env.DEV
   ? '/api/cloudinary-proxy' // Lokalt via Vite
@@ -36,7 +35,7 @@ const fetchImages = async () => {
     const processedImages = data.resources.map(resource => {
       const lowQuality = cld.image(resource.public_id)
         .quality('auto:low')
-        .format('auto');
+        .format('jpg');
 
       const fullQualityUrl = cld.image(resource.public_id).toURL();
 
