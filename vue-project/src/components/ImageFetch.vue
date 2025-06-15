@@ -1,8 +1,8 @@
 <script setup>
-import { ref, onMounted } from 'vue';
-import { Cloudinary } from '@cloudinary/url-gen';
-import { AdvancedImage } from '@cloudinary/vue';
-import GallerySkeleton from './GallerySkeleton.vue';
+import { ref, onMounted } from "vue";
+import { Cloudinary } from "@cloudinary/url-gen";
+import { AdvancedImage } from "@cloudinary/vue";
+import GallerySkeleton from "./GallerySkeleton.vue";
 
 // Initialize Cloudinary instance
 const cld = new Cloudinary({
@@ -17,25 +17,26 @@ const error = ref(null);
 const showSkeleton = ref(true);
 // Dynamisk proxy-url beroende på miljö
 const proxyUrl = import.meta.env.DEV
-  ? '/api/cloudinary-proxy' // Lokalt via Vite
-  : 'https://photo-app-2.vercel.app/api/cloudinary-proxy'; // Vercel deploy
+  ? "/api/cloudinary-proxy" // Lokalt via Vite
+  : "https://photo-app-2.vercel.app/api/cloudinary-proxy"; // Vercel deploy
 
 // Funktion för att hämta bilder från Cloudinary via proxy
 const fetchImages = async () => {
   try {
     const response = await fetch(proxyUrl, {
-      method: 'POST',
+      method: "POST",
     });
     const data = await response.json();
 
     if (!response.ok || !data.resources) {
-      throw new Error(data.error?.message || 'Kunde inte hämta bilder');
+      throw new Error(data.error?.message || "Kunde inte hämta bilder");
     }
 
-    const processedImages = data.resources.map(resource => {
-      const lowQuality = cld.image(resource.public_id)
-        .quality('auto:low')
-        .format('jpg');
+    const processedImages = data.resources.map((resource) => {
+      const lowQuality = cld
+        .image(resource.public_id)
+        .quality("auto:low")
+        .format("jpg");
 
       const fullQualityUrl = cld.image(resource.public_id).toURL();
 
@@ -46,10 +47,10 @@ const fetchImages = async () => {
       };
     });
 
-    images.value = processedImages;
+    images.value.push(...processedImages);
 
     // Vänta tills alla bilder är färdigladdade i DOM
-    const preloadPromises = processedImages.map(img => {
+    const preloadPromises = processedImages.map((img) => {
       return new Promise((resolve, reject) => {
         const image = new Image();
         image.src = img.fullUrl;
@@ -61,12 +62,11 @@ const fetchImages = async () => {
     await Promise.all(preloadPromises);
   } catch (err) {
     error.value = err.message;
-    console.error('Fel vid hämtning av bilder:', err);
+    console.error("Fel vid hämtning av bilder:", err);
   } finally {
     showSkeleton.value = false;
   }
 };
-
 
 const downloadImage = async (url) => {
   try {
@@ -74,9 +74,9 @@ const downloadImage = async (url) => {
     const blob = await response.blob();
     const blobUrl = URL.createObjectURL(blob);
 
-    const link = document.createElement('a');
+    const link = document.createElement("a");
     link.href = blobUrl;
-    link.download = 'image.jpg'; // filnamn med .jpg
+    link.download = "image.jpg"; // filnamn med .jpg
     link.type = blob.type; // lägg till MIME-typ
 
     document.body.appendChild(link);
@@ -88,11 +88,9 @@ const downloadImage = async (url) => {
       URL.revokeObjectURL(blobUrl);
     }, 1000);
   } catch (err) {
-    console.error('Fel vid nedladdning:', err);
+    console.error("Fel vid nedladdning:", err);
   }
 };
-
-
 
 onMounted(() => {
   fetchImages();
@@ -105,11 +103,7 @@ onMounted(() => {
   <GallerySkeleton v-else-if="showSkeleton" />
 
   <div v-else class="masonry">
-    <div
-      v-for="img in images"
-      :key="img.id"
-      class="masonry-img-wrapper"
-    >
+    <div v-for="img in images" :key="img.id" class="masonry-img-wrapper">
       <AdvancedImage :cldImg="img.cldImg" class="masonry-img" />
       <div class="download-square" @click="downloadImage(img.fullUrl)">
         <span class="material-symbols-outlined">download</span>
@@ -119,7 +113,6 @@ onMounted(() => {
 </template>
 
 <style scoped>
-
 /* Masonry layout using CSS columns */
 .masonry {
   column-count: 3;
